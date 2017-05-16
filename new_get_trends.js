@@ -2,17 +2,15 @@
 var http = require('https');
 var fs = require('fs');
 var cheerio = require('cheerio');
-var request = require('request');
-var async = require('async');
 
 //爬取所有关键词的数据
-var mustString = ["求职"] //,"干货","IT","工作","大学生职业"
+var mustString = ["足球","皇马"] //,"干货","IT","工作","大学生职业"
 //爬取控制页面的页数
 var pages = 20;
 try{
 	//扫描关键字查询记录
 	mustString.map(async function(x) {
-	    console.log(">>>",x)
+	    console.log("要爬取的关键词>>>",x)
 	    var info = []; 
 	    //查询第一页
 	    var urlS = encodeURI("https://www.zhihu.com/search?type=content&q="+x);
@@ -28,6 +26,7 @@ try{
 		try{			
 			for(var index=0;index<pages;index++){
 				var infos = await jsGetInfo(url, index);
+				console.log("搜索关键词：",x," >>> 页码:  ",index)
 			    //写入文件
 			    if(infos != []){
 			    	//读出文件然后填充
@@ -35,7 +34,7 @@ try{
 					 	if (err) throw err;
 					 	// console.log(index,">>>>>1==",infos.length,"2==",JSON.parse(data).length)
 					  	let dadada = JSON.parse(data).concat(infos);
-					  	console.log("asdsa>>>",dadada.length)
+					  	
 					 	fs.writeFile('./info'+x+'.json', JSON.stringify(dadada) , function (err) {
 						    if (err) throw err;
 						    // console.log("write Success!");
@@ -67,7 +66,6 @@ function startRequest(urlS,info) {
 	        });
 	    	//监听end事件，如果整个网页内容的html都获取完毕，就执行回调函数
 	        res.on('end', async function () {
-	        	console.log("html.length>>>",html.length)
 	        	//爬取第一页
 	        	info = await htmlInfo(html,info);
 	        	resolve(info)
@@ -112,32 +110,36 @@ function htmlInfo(html){
 
 //解析动态数据
 function jsGetInfo(url,x,info){
-	return new Promise(async function (resolve, reject) {
-		let htmlR = "";
-		let urlZhiHu = url+"&offset="+10*(x);
+	try{
+		return new Promise(async function (resolve, reject) {
+			let htmlR = "";
+			let urlZhiHu = url+"&offset="+10*(x);
 
-		http.get(urlZhiHu, function (res) {     
-	        var jshtml = '';        //用来存储请求网页的整个html内容     
-	        res.setEncoding('utf-8'); //防止中文乱码
+			http.get(urlZhiHu, function (res) {     
+		        var jshtml = '';        //用来存储请求网页的整个html内容     
+		        res.setEncoding('utf-8'); //防止中文乱码
 
-	        //监听data事件，每次取一块数据
-	        res.on('data', function (chunk) {  
-	            jshtml += chunk;
-	        });
-	     	//监听end事件，如果整个网页内容的html都获取完毕，就执行回调函数
-	        res.on('end', async function () {
-	        	//获取到js动态数据 jshtml
-	        	if(jshtml != ""){      
-	                for(let s=0;s<JSON.parse(jshtml).htmls.length;s++){
-	                    htmlR = htmlR+JSON.parse(jshtml).htmls[s]                    
-	                }
-	                console.log(x,">>>htmlR.length>>>",htmlR.length)
-	                info = await htmlInfo(htmlR);
-	                resolve(info);
-	            }else{
-	            	// console.log(x+1,">>>我的天")
-	            }
-	        })
-	    })
-	})
+		        //监听data事件，每次取一块数据
+		        res.on('data', function (chunk) {  
+		            jshtml += chunk;
+		        });
+		     	//监听end事件，如果整个网页内容的html都获取完毕，就执行回调函数
+		        res.on('end', async function () {
+		        	//获取到js动态数据 jshtml
+		        	if(jshtml != ""){      
+		                for(let s=0;s<JSON.parse(jshtml).htmls.length;s++){
+		                    htmlR = htmlR+JSON.parse(jshtml).htmls[s]                    
+		                }
+
+		                info = await htmlInfo(htmlR);
+		                resolve(info);
+		            }else{
+		            	// console.log(x+1,">>>我的天")
+		            }
+		        })
+		    })
+		})
+	}catch(err){
+		console.log("err===",err)
+	}
 }
