@@ -13,7 +13,7 @@ const mongo = require('./lib/mongodb');
 
 let init = async() => {
     return new Promise(async(resolve, reject) => {
-        MongoClient.connect('mongodb://chuxiaoyu:cxy19931006@115.159.92.249:27017/school', {
+        MongoClient.connect('', {       //这里填写数据库登陆信息  mongodb://【账号】:【密码】@【数据库ip和端口】/【数据库名】
             server: {
                 auto_reconnect: true,
                 poolSize: 200
