@@ -13,7 +13,7 @@ const mongo = require('./lib/mongodb');
 
 let init = async() => {
     return new Promise(async(resolve, reject) => {
-        MongoClient.connect('mongodb://chuxiaoyu:cxy19931006@115.159.92.249:27017/school', {
+        MongoClient.connect('mongodb://{****************}/school', {
             server: {
                 auto_reconnect: true,
                 poolSize: 200
