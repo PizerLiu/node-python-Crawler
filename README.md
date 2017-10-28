@@ -1,6 +1,6 @@
 # node-python-Crawler
 
-<h2>nodejs_crawler目录 是nodejs所写爬虫</h2>
+<h2>一，nodejs_crawler目录 是nodejs所写爬虫</h2>
 <h4>new_get_trends.js代码为爬取知乎搜索问题<br></h4>
 <h4>occupationCrawler.js代码文件为爬取牛客实习生求职信息和应届生求职网的求职信息<br></h4>
 
@@ -15,7 +15,7 @@ var pages = 20;
 
 ```
  
-<h2>python_spider目录 是python所写爬虫</h2>
+<h2>二，python_spider目录 是python所写爬虫</h2>
 
 
 <h5 style="color:red">初入github，希望大家多多指点</h5>
